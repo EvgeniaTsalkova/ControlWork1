@@ -11,19 +11,18 @@ import java.util.List;
 
 public class SouvenirStorage {
 
-  //      File fileName = new File("souvenirs.json");
-        File fileName = new File("souvenirs1.dat");
+//    File fileName = new File("souvenirs1.json");
+//    private final SerializationStrategy<Souvenir> serializationStrategy = new JsonSerializationStrategy<>();
 
-//        private final SerializationStrategy<Souvenir> jsonStrategy = new JsonSerializationStrategy<>();
-//        private final ObjectSerializer<Souvenir> serializer = new ObjectSerializer<>(jsonStrategy);
-        private final SerializationStrategy<Souvenir> oosStrategy = new OOSSerializationStrategy<>();
-        private final ObjectSerializer<Souvenir> serializer = new ObjectSerializer<>(oosStrategy);
+    File fileName = new File("souvenirs1.dat");
+    private final SerializationStrategy<Souvenir> serializationStrategy = new OOSSerializationStrategy<>();
+    private final ObjectSerializer<Souvenir> serializer = new ObjectSerializer<>(serializationStrategy);
 
-        public List<Souvenir> readSouvenirList(){
-            return serializer.deserializeObj(fileName, Souvenir.class);
-        }
+    public List<Souvenir> readSouvenirList() {
+        return serializer.deserializeObj(fileName, Souvenir.class);
+    }
 
-        public void writeSouvenirList(List<Souvenir> souvenirList) {
-                serializer.serializeObj(souvenirList, fileName);
-        }
+    public void writeSouvenirList(List<Souvenir> souvenirList) {
+        serializer.serializeObj(souvenirList, fileName);
+    }
 }

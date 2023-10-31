@@ -19,9 +19,10 @@ public class SouvenirService {
         return souvenirList;
     }
 
-    public void updateSouvenir(String name, String manufacturerName, Souvenir souvenir) {
+    public void updateSouvenir(String name, String manufacturerName, String manufacturerCountry, Souvenir souvenir) {
         Souvenir souvenirToBeUpdated = souvenirList.stream()
-                .filter(s -> s.getName().equals(name) && s.getManufacturer().getName().equals(manufacturerName))
+                .filter(s -> Objects.equals(s.getName(), name) && Objects.equals(s.getManufacturer().getName(), manufacturerName)
+                        && Objects.equals(s.getManufacturer().getCountry(), manufacturerCountry))
                 .findFirst().orElse(null);
         if (souvenirToBeUpdated != null) {
             souvenirToBeUpdated.setName(souvenir.getName());
@@ -30,9 +31,10 @@ public class SouvenirService {
         }
     }
 
-    public List<Souvenir> getSouvenirListByManufacturer(String manufacturerName) {
+    public List<Souvenir> getSouvenirListByManufacturer(String manufacturerName, String manufacturerCountry) {
         return souvenirList.stream()
-                .filter(s -> s.getManufacturer().getName().equals(manufacturerName))
+                .filter(s -> Objects.equals(s.getManufacturer().getName(),manufacturerName) &&
+                        Objects.equals(s.getManufacturer().getCountry(), manufacturerCountry))
                 .collect(Collectors.toList());
     }
 
@@ -51,8 +53,10 @@ public class SouvenirService {
     }
 
 
-    public void deleteSouvenirsByManufacturer(String manufacturerName) {
-        souvenirList.removeIf(s -> s.getManufacturer().getName().equals(manufacturerName));
+    public void deleteSouvenirsByManufacturer(String manufacturerName, String manufacturerCountry) {
+        souvenirList.removeIf(s -> Objects.equals(s.getManufacturer().getName(), manufacturerName) &&
+                Objects.equals(s.getManufacturer().getCountry(), manufacturerCountry));
+        writeSouvenirList();
     }
 
     public void writeSouvenirList() {

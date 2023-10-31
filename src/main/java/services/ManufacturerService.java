@@ -14,7 +14,6 @@ public class ManufacturerService {
 
     private final ManufacturerStorage manufacturerStorage = new ManufacturerStorage();
     private final Set<Manufacturer> manufacturerSet = new HashSet<>(manufacturerStorage.readManufacturerList());
-    private final SouvenirService souvenirService = new SouvenirService();
 
     public void addManufacturer(Manufacturer manufacturer) {
         if (!manufacturerSet.contains(manufacturer)) {
@@ -26,9 +25,10 @@ public class ManufacturerService {
         return manufacturerSet;
     }
 
-    public void updateManufacturer(String manufacturerName, Manufacturer manufacturer){
+    public void updateManufacturer(String manufacturerName, String country, Manufacturer manufacturer){
         Manufacturer manufacturerToBeUpdated = manufacturerSet.stream()
-                .filter(m -> m.getName().equals(manufacturerName)).findFirst().orElse(null);
+                .filter(m -> Objects.equals(m.getName(), manufacturerName) && Objects.equals(m.getCountry(), country))
+                .findFirst().orElse(null);
 
         if (manufacturerToBeUpdated != null) {
             manufacturerToBeUpdated.setName(manufacturer.getName());
@@ -52,9 +52,8 @@ public class ManufacturerService {
                 .collect(Collectors.toSet());
     }
 
-    public void deleteManufacturer(String manufacturerName) {
-        manufacturerSet.removeIf(m -> m.getName().equals(manufacturerName));
-        souvenirService.deleteSouvenirsByManufacturer(manufacturerName);
+    public void deleteManufacturer(String manufacturerName, String country) {
+        manufacturerSet.removeIf(m -> Objects.equals(m.getName(), manufacturerName) && Objects.equals(m.getCountry(), country));
     }
 
     public void addSouvenirToList(Souvenir souvenir, Manufacturer manufacturer) {

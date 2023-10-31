@@ -30,6 +30,7 @@ public class Menu {
                 case "1" -> showSouvenirOperations();
                 case "2" -> showManufacturerOperations();
                 case "0" -> check = false;
+                default -> System.out.println("No such operation.");
             }
         }
     }
@@ -63,22 +64,43 @@ public class Menu {
                     String souvenirName = scanner.nextLine();
                     System.out.print("Name of the manufacturer of the souvenir that will be changed: ");
                     String manufacturerName = scanner.nextLine();
-                    System.out.println("Enter new data:");
-                    Souvenir souvenir1 = createSouvenir();
-                    Manufacturer manufacturer1 = createManufacturer();
-                    souvenir1.setManufacturer(manufacturer1);
-                    souvenirService.updateSouvenir(souvenirName, manufacturerName, souvenir1);
+                    System.out.print("Country of the manufacturer of the souvenir that will be changed: ");
+                    String manufacturerCountry = scanner.nextLine();
+                    System.out.println("Enter new data: ");
+                    Souvenir souvenir = createSouvenir();
+                    Manufacturer manufacturer = createManufacturer();
+                    souvenir.setManufacturer(manufacturer);
+                    souvenirService.updateSouvenir(souvenirName, manufacturerName, manufacturerCountry, souvenir);
                 }
-                case "1.3" -> souvenirService.getSouvenirList().forEach(System.out::println);
+                case "1.3" -> {
+                    List<Souvenir> souvenirList = souvenirService.getSouvenirList();
+                    if (!souvenirList.isEmpty()) {
+                        souvenirList.forEach(System.out::println);
+                    } else {
+                        System.out.println("List is empty.");
+                    }
+                }
                 case "1.4" -> {
                     System.out.print("Name of the souvenir's manufacturer: ");
-                    String manufacturerName1 = scanner.nextLine();
-                    souvenirService.getSouvenirListByManufacturer(manufacturerName1).forEach(System.out::println);
+                    String manufacturerName = scanner.nextLine();
+                    System.out.print("Country of the souvenir's manufacturer: ");
+                    String manufacturerCountry = scanner.nextLine();
+                    List<Souvenir> souvenirList = souvenirService.getSouvenirListByManufacturer(manufacturerName, manufacturerCountry);
+                    if (!souvenirList.isEmpty()) {
+                        souvenirList.forEach(System.out::println);
+                    } else {
+                        System.out.println("List is empty.");
+                    }
                 }
                 case "1.5" -> {
-                    System.out.print("Country of the souvenir's manufacturer:");
+                    System.out.print("Country of the souvenir's manufacturer: ");
                     String country = scanner.nextLine();
-                    souvenirService.getSouvenirListByCountry(country).forEach(System.out::println);
+                    List<Souvenir> souvenirList = souvenirService.getSouvenirListByCountry(country);
+                    if (!souvenirList.isEmpty()) {
+                        souvenirList.forEach(System.out::println);
+                    } else {
+                        System.out.println("List is empty.");
+                    }
                 }
                 case "1.6" -> {
                     System.out.print("Enter years separated by commas: ");
@@ -86,12 +108,18 @@ public class Menu {
                     Set<Integer> years = Stream.of(s.split(" *, *"))
                             .map(Integer::parseInt)
                             .collect(Collectors.toSet());
-                    souvenirService.getSouvenirMapByYears(years).entrySet().forEach(System.out::println);
+                    Map<Integer, List<Souvenir>> map = souvenirService.getSouvenirMapByYears(years);
+                    if (!map.isEmpty()) {
+                        map.entrySet().forEach(System.out::println);
+                    } else {
+                        System.out.println("List is empty.");
+                    }
                 }
                 case "1.0" -> {
                     souvenirService.writeSouvenirList();
                     check = false;
                 }
+                default -> System.out.println("No such operation.");
             }
         }
     }
@@ -122,33 +150,63 @@ public class Menu {
                 case "2.2" -> {
                     System.out.print("Name of the manufacturer that will be changed: ");
                     String manufacturerName = scanner.nextLine();
-                    System.out.println("Enter new data:");
-                    Manufacturer manufacturer1 = createManufacturer();
-                    manufacturerService.updateManufacturer(manufacturerName, manufacturer1);
+                    System.out.print("Country of the manufacturer that will be changed: ");
+                    String country = scanner.nextLine();
+                    System.out.println("Enter new data: ");
+                    Manufacturer manufacturer = createManufacturer();
+                    manufacturerService.updateManufacturer(manufacturerName, country, manufacturer);
                 }
-                case "2.3" -> manufacturerService.getManufacturerSet().forEach(Manufacturer::printInfo);
+                case "2.3" -> {
+                    Set<Manufacturer> manufacturerSet = manufacturerService.getManufacturerSet();
+                    if (!manufacturerSet.isEmpty()) {
+                        manufacturerSet.forEach(Manufacturer::printInfo);
+                    } else {
+                        System.out.println("List is empty.");
+                    }
+                }
                 case "2.4" -> {
                     System.out.print("Price: ");
                     double price = Double.parseDouble(scanner.nextLine());
-                    manufacturerService.getManufacturerSetBySouvenirPrice(price).forEach(System.out::println);
+                    Set<Manufacturer> manufacturerSet = manufacturerService.getManufacturerSetBySouvenirPrice(price);
+                    if (!manufacturerSet.isEmpty()) {
+                        manufacturerSet.forEach(System.out::println);
+                    } else {
+                        System.out.println("List is empty.");
+                    }
                 }
-                case "2.5" -> manufacturerService.getManufacturerSet().forEach(System.out::println);
+                case "2.5" -> {
+                    Set<Manufacturer> manufacturerSet = manufacturerService.getManufacturerSet();
+                    if (!manufacturerSet.isEmpty()) {
+                        manufacturerSet.forEach(System.out::println);
+                    } else {
+                        System.out.println("List is empty.");
+                    }
+                }
                 case "2.6" -> {
                     System.out.print("Souvenir's name: ");
                     String souvenirName = scanner.nextLine();
                     System.out.print("Production year: ");
                     int year = Integer.parseInt(scanner.nextLine());
-                    manufacturerService.getManufacturerSetBySouvenirAndYear(souvenirName, year).forEach(System.out::println);
+                    Set<Manufacturer> manufacturerSet = manufacturerService.getManufacturerSetBySouvenirAndYear(souvenirName, year);
+                    if (!manufacturerSet.isEmpty()) {
+                        manufacturerSet.forEach(System.out::println);
+                    } else {
+                        System.out.println("List is empty.");
+                    }
                 }
                 case "2.7" -> {
                     System.out.print("Name of the manufacturer that will be deleted: ");
                     String name = scanner.nextLine();
-                    manufacturerService.deleteManufacturer(name);
+                    System.out.print("Country of the manufacturer that will be deleted: ");
+                    String country = scanner.nextLine();
+                    manufacturerService.deleteManufacturer(name, country);
+                    souvenirService.deleteSouvenirsByManufacturer(name, country);
                 }
                 case "2.0" -> {
                     manufacturerService.writeManufacturerSet();
                     check = false;
                 }
+                default -> System.out.println("No such operation.");
             }
         }
     }
